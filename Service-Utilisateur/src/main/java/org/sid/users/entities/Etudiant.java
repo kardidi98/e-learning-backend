@@ -3,17 +3,9 @@ package org.sid.users.entities;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper=false)
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-@Data
-@Entity @NoArgsConstructor
+@Entity 
 
 public class Etudiant extends Utilisateur{
 	public Etudiant(Utilisateur user) {

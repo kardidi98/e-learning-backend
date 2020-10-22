@@ -1,0 +1,129 @@
+package com.servicecours.Entities;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+public class Cours {
+	
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String nom;
+	private Categorie categorie;
+	private LocalDate dateDeb;
+	private LocalDate dateFin;
+	
+	@ElementCollection
+	private List<Long> etudiantIds;
+	private Long professeurId;
+	private Long imageId;
+	
+	
+
+
+
+	public Cours(Long id, String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, List<Long> etudiantIds,
+			Long professeurId, Long imageId) {
+		this.id = id;
+		this.nom = nom;
+		this.categorie = categorie;
+		this.dateDeb = dateDeb;
+		this.dateFin = dateFin;
+		this.etudiantIds = etudiantIds;
+		this.professeurId = professeurId;
+		this.imageId = imageId;
+	}
+
+
+	public Cours() {
+	}
+
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public String getNom() {
+		return nom;
+	}
+
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+
+	public Categorie getCategorie() {
+		return categorie;
+	}
+
+
+	public void setCategorie(Categorie categorie) {
+		this.categorie = categorie;
+	}
+
+
+	public LocalDate getDateDeb() {
+		return dateDeb;
+	}
+
+
+	public void setDateDeb(LocalDate dateDeb) {
+		this.dateDeb = dateDeb;
+	}
+
+
+	public LocalDate getDateFin() {
+		return dateFin;
+	}
+
+
+	public void setDateFin(LocalDate dateFin) {
+		this.dateFin = dateFin;
+	}
+
+
+	public List<Long> getEtudiantIds() {
+		return etudiantIds;
+	}
+
+
+	public void setEtudiantIds(List<Long> etudiantIds) {
+		this.etudiantIds = etudiantIds;
+	}
+
+
+	public Long getProfesseurId() {
+		return professeurId;
+	}
+
+
+	public void setProfesseurId(Long professeurId) {
+		this.professeurId = professeurId;
+	}
+
+
+	public Long getImageId() {
+		return imageId;
+	}
+
+
+	public void setImageId(Long imageId) {
+		this.imageId = imageId;
+	}
+	
+	
+
+}

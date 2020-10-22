@@ -29,13 +29,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 //		.resourceIds("oauth2-resourse")
-		clients.inMemory().withClient("client").authorizedGrantTypes("client-credentials","password")
-		.authorities("ROLE_USER").scopes("read","write","trust").accessTokenValiditySeconds(5000).secret(passwordEncoder.encode("secret"));
+		clients.inMemory().withClient("client").secret(passwordEncoder.encode("secret")).authorizedGrantTypes("password")
+		.authorities("ROLE_USER").scopes("read","write","trust").accessTokenValiditySeconds(5000);
 	}
 
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-		security.checkTokenAccess("isAuthenticated()");
+		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
 	}
 	
 }

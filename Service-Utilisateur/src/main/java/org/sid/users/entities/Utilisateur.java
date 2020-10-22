@@ -9,17 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @Entity
-@Data
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Utilisateur {
 	
 	@Id   
@@ -106,6 +100,13 @@ public class Utilisateur {
 	public void setDateInscrip(LocalDate dateInscrip) {
 		DateInscrip = dateInscrip;
 	}
+	@Override
+	public String toString() {
+		return "Utilisateur [iduser=" + iduser + ", email=" + email + ", password=" + password + ", role=" + role
+				+ ", nom=" + nom + ", prenom=" + prenom + ", adresse=" + adresse + ", tel=" + tel + ", DateInscrip="
+				+ DateInscrip + "]";
+	}
+	
 	
 	
 	
