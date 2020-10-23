@@ -12,10 +12,9 @@ import javax.persistence.Lob;
 public class Image {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 	private String fileName;
-	 
     private String contentType;
     @Lob
     private byte[] data;

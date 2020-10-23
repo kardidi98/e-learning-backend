@@ -63,11 +63,13 @@ public class UserController {
 	public String getHome() {
 		return "welcome home";
 	}
+	@GetMapping("/users/professor/{username}")
+	public Professeur getProf(@PathVariable("username") String username) {
+		return professeurRepository.findByUsername(username);
+	}
 	@GetMapping("/users/{username}")
-	public String getUser(@PathVariable("username") String username) {
-		if(userRepository.findByEmail(username).size()>0)
-			return "exist";
-		return "dosen't exist";
+	public Utilisateur getUser(@PathVariable("username") String username) {
+		return userRepository.findByUsername(username);
 	}
 	@PostMapping(value="/users/signup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public String signup(@RequestPart(value = "image",required = false) MultipartFile image, @RequestPart("utilisateur") Utilisateur user) throws IOException {

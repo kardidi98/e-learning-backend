@@ -2,11 +2,13 @@ package com.servicecours.Entities;
 
 public enum Categorie {
 	
-	Informatique,
+	Développemnt,
 	BI,
 	AI,
 	Marketing,
 	DevOps,
-	Blockchain
+	Programmation,
+	Langues
+	
 
 }

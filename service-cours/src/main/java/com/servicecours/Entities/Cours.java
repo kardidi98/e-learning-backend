@@ -39,6 +39,21 @@ public class Cours {
 		this.professeurId = professeurId;
 		this.imageId = imageId;
 	}
+	
+	
+
+
+	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin,
+			Long professeurId, Long imageId) {
+		this.nom = nom;
+		this.categorie = categorie;
+		this.dateDeb = dateDeb;
+		this.dateFin = dateFin;
+		this.professeurId = professeurId;
+		this.imageId = imageId;
+	}
+
+
 
 
 	public Cours() {
