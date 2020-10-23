@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Base64;
+import org.sid.users.config.JwtTokenUtil;
 import org.sid.users.config.service.CustomUserDetailsService;
 import org.sid.users.entities.Etudiant;
 import org.sid.users.entities.Professeur;
 import org.sid.users.entities.Image;
+import org.sid.users.entities.JwtResponse;
 import org.sid.users.entities.Utilisateur;
 import org.sid.users.repositories.EtudiantRepository;
 import org.sid.users.repositories.ProfesseurRepository;
 import org.sid.users.repositories.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -34,9 +35,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 
+
+
+
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 public class UserController {
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 	
 	@Autowired
 	UtilisateurRepository userRepository;
@@ -63,7 +70,7 @@ public class UserController {
 		return "dosen't exist";
 	}
 	@PostMapping(value="/users/signup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String signup(@RequestPart("image") MultipartFile image, @RequestPart("utilisateur") Utilisateur user) throws IOException {
+	public String signup(@RequestPart(value = "image",required = false) MultipartFile image, @RequestPart("utilisateur") Utilisateur user) throws IOException {
 
 		if(userRepository.findByEmail(user.getEmail()).size()>0) {
 			return "Already exists.";
@@ -75,7 +82,6 @@ public class UserController {
 			if (user.getRole().equals("ROLE_ETUDIANT"))
 				etudiantRepository.save(new Etudiant(user));
 			if (user.getRole().equals("ROLE_PROFESSEUR")) {
-				System.out.println(user.getRole());
 				Image img = restTemplate.postForObject("http://service-image/images/addImage",new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()),Image.class);
 				professeurRepository.save(new Professeur(user,img.getId()));
 			}
@@ -90,8 +96,6 @@ public class UserController {
 	@PostMapping(value="/users/login")
 	public ResponseEntity<?> login(@RequestBody Utilisateur user) throws IOException {
 
-		String credentials = "client:secret";
-		String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
 		
 		if(userRepository.findByEmail(user.getEmail()).size() == 0) {
 			return new ResponseEntity<>("dosen't exist.",HttpStatus.OK);
@@ -102,20 +106,14 @@ public class UserController {
 		
 		if(passwordEncoder.matches(user.getPassword(),userDetails.getPassword())){
 			
-			HttpHeaders headers = new HttpHeaders();
-			headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-			headers.add("Authorization", "Basic " + encodedCredentials);
-			HttpEntity<String> request = new HttpEntity<String>(headers);
-			ResponseEntity<String> reponse = restTemplate.exchange("http://service-utilisateur/oauth/token?grant_type=password&username="+userDetails.getUsername()+"&password="+user.getPassword(), HttpMethod.POST, request, String.class);
-
-			return ResponseEntity.ok(reponse.getBody());
+			final String token = jwtTokenUtil.generateToken(userDetails);
+			
+			return ResponseEntity.ok(new JwtResponse(token));
 			
 		}
 		else {
 			return new ResponseEntity<>("Incorrect Password",HttpStatus.OK);
 		}
-			
-		
 		
 	}
 	

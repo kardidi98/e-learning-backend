@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 		if(user==null) {
 			throw new UsernameNotFoundException("Invalid email or password !");
 		}
-		return new User(username,user.getPassword() ,true,true,true, true, AuthorityUtils.createAuthorityList(user.getRole()));
+		return new User(user.getEmail(),user.getPassword(), AuthorityUtils.createAuthorityList("CLIENT"));
 	}
 	
 }

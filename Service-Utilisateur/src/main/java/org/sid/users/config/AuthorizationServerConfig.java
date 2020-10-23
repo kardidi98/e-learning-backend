@@ -30,7 +30,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 //		.resourceIds("oauth2-resourse")
 		clients.inMemory().withClient("client").secret(passwordEncoder.encode("secret")).authorizedGrantTypes("password")
-		.authorities("ROLE_USER").scopes("read","write","trust").accessTokenValiditySeconds(5000);
+		.authorities("CLIENT").scopes("read","write","trust").accessTokenValiditySeconds(5000);
 	}
 
 	@Override
