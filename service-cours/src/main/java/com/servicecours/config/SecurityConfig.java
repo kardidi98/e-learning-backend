@@ -1,16 +1,33 @@
 package com.servicecours.config;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	UserDetailsService userDetailsService;
+	
+	@Autowired
+	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	
+	@Autowired
+	private JwtRequestFilter jwtRequestFilter;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 	
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**").allowedOrigins("*")
@@ -18,19 +35,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		"DELETE").allowedHeaders("*");
 	}
 	
+	
 	@Override
 	public void configure(HttpSecurity http) throws Exception{
-		http.authorizeRequests().antMatchers("/courses/**").permitAll()
-		.antMatchers(HttpMethod.POST,"/courses/add")
-		.hasAuthority("ROLE_PROFESSUER")
-		.antMatchers(HttpMethod.POST,"/courses/subscribe")
-		.hasAuthority("ROLE_ETUDIANT")
-		.antMatchers(HttpMethod.GET,"/courses/**")
+		http.authorizeRequests()
+		.antMatchers("/courses/add")
 		.hasAuthority("ROLE_PROFESSEUR")
+		.antMatchers("/courses/subscribe")
+		.hasAuthority("ROLE_ETUDIANT")
+//		.antMatchers("/courses/**")
+//		.hasAuthority("ROLE_PROFESSEUR")
+		.antMatchers("/courses/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.httpBasic()
 		.and()
-		.csrf().disable();
+		.cors()
+		.and()
+		.csrf()
+		.disable()
+		.headers()
+		.frameOptions()
+		.deny();
+		http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 }

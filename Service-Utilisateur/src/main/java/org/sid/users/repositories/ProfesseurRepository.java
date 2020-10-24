@@ -9,6 +9,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface ProfesseurRepository extends JpaRepository<Professeur, Long>{
 
-	@Query(value="select * from professeur where username like :x",nativeQuery = true)
-	public Professeur findByUsername(@Param("x") String email);
+	
+	public Professeur findByEmail(String email);
 }

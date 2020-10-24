@@ -1,5 +1,7 @@
 package com.serviceimage.Controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,7 @@ import com.serviceimage.Repositories.ImageRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("images")
+@RequestMapping("/images")
 public class ImageController {
 
 	@Autowired
@@ -25,6 +27,11 @@ public class ImageController {
 	@GetMapping("/{id}")
 	public Image getImage(@PathVariable("id") Long id) {
 		return imagerepository.findById(id).get();
+	}
+	
+	@GetMapping("/")
+	public List<Image> getAll() {
+		return imagerepository.findAll();
 	}
 	
 	@PostMapping("/addImage")

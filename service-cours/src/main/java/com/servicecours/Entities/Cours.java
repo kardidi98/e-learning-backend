@@ -18,41 +18,37 @@ public class Cours {
 	private Categorie categorie;
 	private LocalDate dateDeb;
 	private LocalDate dateFin;
+	private String description;
 	
 	@ElementCollection
 	private List<Long> etudiantIds;
 	private Long professeurId;
 	private Long imageId;
-	
-	
 
 
-
-	public Cours(Long id, String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, List<Long> etudiantIds,
-			Long professeurId, Long imageId) {
-		this.id = id;
+	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, String description,
+			List<Long> etudiantIds, Long professeurId, Long imageId) {
 		this.nom = nom;
 		this.categorie = categorie;
 		this.dateDeb = dateDeb;
 		this.dateFin = dateFin;
+		this.description = description;
 		this.etudiantIds = etudiantIds;
 		this.professeurId = professeurId;
 		this.imageId = imageId;
 	}
-	
-	
 
 
-	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin,
+	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, String description,
 			Long professeurId, Long imageId) {
 		this.nom = nom;
 		this.categorie = categorie;
 		this.dateDeb = dateDeb;
 		this.dateFin = dateFin;
+		this.description = description;
 		this.professeurId = professeurId;
 		this.imageId = imageId;
 	}
-
 
 
 
@@ -137,6 +133,16 @@ public class Cours {
 
 	public void setImageId(Long imageId) {
 		this.imageId = imageId;
+	}
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	

@@ -2,6 +2,7 @@ package org.sid.users.controllers;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.sid.users.config.JwtTokenUtil;
@@ -29,17 +30,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 
-
-
-
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
+@RequestMapping("/users")
 public class UserController {
 	
 	@Autowired
@@ -63,15 +63,26 @@ public class UserController {
 	public String getHome() {
 		return "welcome home";
 	}
-	@GetMapping("/users/professor/{username}")
+	
+	@GetMapping("/professor/{username}")
 	public Professeur getProf(@PathVariable("username") String username) {
-		return professeurRepository.findByUsername(username);
+		
+		return professeurRepository.findByEmail(username);
 	}
-	@GetMapping("/users/{username}")
+	
+	@GetMapping("")
+	public List<Utilisateur> getAll() {
+		
+		return userRepository.findAll();
+	}
+	
+	@GetMapping("/{username}")
 	public Utilisateur getUser(@PathVariable("username") String username) {
-		return userRepository.findByUsername(username);
+		return userRepository.findByEmail(username).get(0);
 	}
-	@PostMapping(value="/users/signup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	
+
+	@PostMapping(value="/signup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public String signup(@RequestPart(value = "image",required = false) MultipartFile image, @RequestPart("utilisateur") Utilisateur user) throws IOException {
 
 		if(userRepository.findByEmail(user.getEmail()).size()>0) {
@@ -95,7 +106,7 @@ public class UserController {
 		
 	}
 	
-	@PostMapping(value="/users/login")
+	@PostMapping(value="/login")
 	public ResponseEntity<?> login(@RequestBody Utilisateur user) throws IOException {
 
 		
@@ -119,7 +130,7 @@ public class UserController {
 		
 	}
 	
-	@PutMapping("/users/{id}")
+	@PutMapping("/{id}")
 	public String modify(@RequestBody Utilisateur user, @PathVariable("id") Long id) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setIduser(id);

@@ -1,11 +1,10 @@
-package org.sid.users.config.service;
+package com.serviceimage.config.service;
 
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.sid.users.entities.Utilisateur;
-import org.sid.users.repositories.UtilisateurRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -16,6 +15,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.serviceimage.Entities.Utilisateur;
+
 
 
 @Service
@@ -24,11 +27,13 @@ public class CustomUserDetailsService implements UserDetailsService{
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	@Autowired
-	UtilisateurRepository userRepository;
+	RestTemplate restTemplate;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Utilisateur user= userRepository.findByEmail(username).get(0);
+		
+		//System.out.println(username);
+		Utilisateur user= restTemplate.getForObject("http://service-utilisateur/users/"+username, Utilisateur.class);
 		
 		if(user==null) {
 			throw new UsernameNotFoundException("Invalid email or password !");

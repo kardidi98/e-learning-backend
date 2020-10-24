@@ -1,10 +1,9 @@
-package org.sid.users.config;
+package com.serviceimage.config;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	UserDetailsService userDetailsService;
@@ -30,28 +29,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	@Autowired
-	public void  configueGlobl(final AuthenticationManagerBuilder auth) throws Exception {
-	
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-
-	}
-	
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**").allowedOrigins("*")
 		.allowedMethods("GET", "PUT", "POST",
 		"DELETE").allowedHeaders("*");
 	}
+	
+	
 	@Override
-	public void configure(HttpSecurity http) throws Exception {
-		http
-		.authorizeRequests()
+	public void configure(HttpSecurity http) throws Exception{
+		http.authorizeRequests()
 		
-		.antMatchers("/users/api/home")
-		.hasAuthority("ROLE_PROFESSEUR")
-		.antMatchers("/users/**").permitAll()
-		.anyRequest().authenticated();
-		http
+		.antMatchers("/images/addImgae").hasAnyAuthority("ROLE_PROFESSEUR","ROLE_ETUDIANT")
+		.antMatchers("/images/**").permitAll()
+		.anyRequest().authenticated()
+		.and()
 		.httpBasic()
 		.and()
 		.cors()
@@ -64,12 +56,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-	}
-	
-	
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
 	}
 }
