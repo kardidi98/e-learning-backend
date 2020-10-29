@@ -8,9 +8,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -61,8 +63,21 @@ public class coursController {
 		
 		return "Course added";
 	}
+	
+	@PutMapping(value="/update/{id}")
+	public String update(@PathVariable("id") Long id) {
+		Cours cours = coursRepository.findById(id).get();
+		
+		return "MAJ réussie";
+	}
+	
+	@DeleteMapping(value="/delete/{id}")
+	public String delete(@PathVariable("id") Long id) {
+		return "suppression réussie";
+	}
+	
 	@PostMapping(value="/subscribe")
-	public String subscribe() throws RestClientException, IOException {
+	public String subscribe(){
 		return "Inscription réussie";
 	}
 

@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception{
 		http.authorizeRequests()
-		.antMatchers("/courses/add")
+		.antMatchers("/courses/add","/courses/update/**","/courses/delete/**")
 		.hasAuthority("ROLE_PROFESSEUR")
 		.antMatchers("/courses/subscribe")
 		.hasAuthority("ROLE_ETUDIANT")
