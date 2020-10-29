@@ -2,7 +2,7 @@ package com.servicecours.Entities;
 
 public enum Categorie {
 	
-	Développemnt,
+	Développement,
 	BI,
 	AI,
 	Marketing,

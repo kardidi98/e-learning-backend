@@ -20,27 +20,12 @@ public class Cours {
 	private LocalDate dateFin;
 	private String description;
 	
-	@ElementCollection
-	private List<Long> etudiantIds;
 	private Long professeurId;
 	private Long imageId;
 
 
 	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, String description,
-			List<Long> etudiantIds, Long professeurId, Long imageId) {
-		this.nom = nom;
-		this.categorie = categorie;
-		this.dateDeb = dateDeb;
-		this.dateFin = dateFin;
-		this.description = description;
-		this.etudiantIds = etudiantIds;
-		this.professeurId = professeurId;
-		this.imageId = imageId;
-	}
-
-
-	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, String description,
-			Long professeurId, Long imageId) {
+			 Long professeurId, Long imageId) {
 		this.nom = nom;
 		this.categorie = categorie;
 		this.dateDeb = dateDeb;
@@ -49,6 +34,8 @@ public class Cours {
 		this.professeurId = professeurId;
 		this.imageId = imageId;
 	}
+
+
 
 
 
@@ -105,15 +92,6 @@ public class Cours {
 		this.dateFin = dateFin;
 	}
 
-
-	public List<Long> getEtudiantIds() {
-		return etudiantIds;
-	}
-
-
-	public void setEtudiantIds(List<Long> etudiantIds) {
-		this.etudiantIds = etudiantIds;
-	}
 
 
 	public Long getProfesseurId() {

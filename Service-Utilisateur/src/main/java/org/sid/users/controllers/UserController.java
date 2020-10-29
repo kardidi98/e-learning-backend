@@ -70,6 +70,12 @@ public class UserController {
 		return professeurRepository.findByEmail(username);
 	}
 	
+	@GetMapping("/professors")
+	public List<Professeur> getAllProfessors() {
+		
+		return professeurRepository.findAll();
+	}
+	
 	@GetMapping("")
 	public List<Utilisateur> getAll() {
 		
@@ -95,7 +101,8 @@ public class UserController {
 			if (user.getRole().equals("ROLE_ETUDIANT"))
 				etudiantRepository.save(new Etudiant(user));
 			if (user.getRole().equals("ROLE_PROFESSEUR")) {
-				Image img = restTemplate.postForObject("http://service-image/images/addImage",new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()),Image.class);
+				Image img = restTemplate.postForObject("http://service-image/images/addImage",
+						new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()),Image.class);
 				professeurRepository.save(new Professeur(user,img.getId()));
 			}
 			
@@ -130,15 +137,15 @@ public class UserController {
 		
 	}
 	
-	@PutMapping("/{id}")
-	public String modify(@RequestBody Utilisateur user, @PathVariable("id") Long id) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setIduser(id);
-		userRepository.save(user);
-		if (user.getRole().equals("ROLE_ETUDIANT"))
-			etudiantRepository.save(new Etudiant(user));
-		if (user.getRole().equals("ROLE_PROFESSEUR"))
-			professeurRepository.save(new Professeur(user));
-		return "User is added successfully.";
-	}
+//	@PutMapping("/update/{id}")
+//	public String modify(@RequestBody Utilisateur user, @PathVariable("id") Long id) {
+//		user.setPassword(passwordEncoder.encode(user.getPassword()));
+//		user.setIduser(id);
+//		userRepository.save(user);
+//		if (user.getRole().equals("ROLE_ETUDIANT"))
+//			etudiantRepository.save(new Etudiant(user));
+//		if (user.getRole().equals("ROLE_PROFESSEUR"))
+//			professeurRepository.save(new Professeur(user));
+//		return "User is added successfully.";
+//	}
 }

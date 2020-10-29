@@ -12,12 +12,14 @@ public class Professeur extends Utilisateur{
 	private Long idimage;
 	
 	public Professeur(Utilisateur user,Long idimage) {
-		super(user.getIduser(), user.getEmail(), user.getPassword(), "ROLE_PROFESSEUR", user.getNom(), user.getPrenom(), user.getAdresse(), user.getTel(), user.getDateInscrip());
+		super(user.getIduser(), user.getEmail(), user.getPassword(), "ROLE_PROFESSEUR", user.getNom(), user.getPrenom(),
+				user.getAdresse(), user.getTel(), user.getDateInscrip());
 		this.idimage = idimage;
 	}
 	
 	public Professeur(Utilisateur user) {
-		super(user.getIduser(), user.getEmail(), user.getPassword(), "ROLE_PROFESSEUR", user.getNom(), user.getPrenom(), user.getAdresse(), user.getTel(), user.getDateInscrip());
+		super(user.getIduser(), user.getEmail(), user.getPassword(), "ROLE_PROFESSEUR", user.getNom(), user.getPrenom(),
+				user.getAdresse(), user.getTel(), user.getDateInscrip());
 	}
 	
 	public Professeur(Long idimage) {

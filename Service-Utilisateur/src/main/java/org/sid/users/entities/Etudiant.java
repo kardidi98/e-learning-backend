@@ -9,7 +9,8 @@ import javax.persistence.Entity;
 
 public class Etudiant extends Utilisateur{
 	public Etudiant(Utilisateur user) {
-		super(user.getIduser(), user.getEmail(), user.getPassword(), "ROLE_ETUDIANT", user.getNom(), user.getPrenom(), user.getAdresse(), user.getTel(), user.getDateInscrip());
+		super(user.getIduser(), user.getEmail(), user.getPassword(), "ROLE_ETUDIANT", user.getNom(), user.getPrenom(),
+				user.getAdresse(), user.getTel(), user.getDateInscrip());
 	}
 
 	public Etudiant() {

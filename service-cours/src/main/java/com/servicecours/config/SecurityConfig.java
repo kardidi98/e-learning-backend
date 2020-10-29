@@ -26,8 +26,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 	
-	@Autowired
-	PasswordEncoder passwordEncoder;
 	
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**").allowedOrigins("*")
@@ -43,8 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.hasAuthority("ROLE_PROFESSEUR")
 		.antMatchers("/courses/subscribe")
 		.hasAuthority("ROLE_ETUDIANT")
-//		.antMatchers("/courses/**")
-//		.hasAuthority("ROLE_PROFESSEUR")
 		.antMatchers("/courses/**").permitAll()
 		.anyRequest().authenticated()
 		.and()

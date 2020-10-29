@@ -29,7 +29,7 @@ public class ImageController {
 		return imagerepository.findById(id).get();
 	}
 	
-	@GetMapping("/")
+	@GetMapping("/All")
 	public List<Image> getAll() {
 		return imagerepository.findAll();
 	}
