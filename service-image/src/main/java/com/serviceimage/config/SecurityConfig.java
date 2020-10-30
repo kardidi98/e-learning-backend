@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception{
 		http.authorizeRequests()
 		
-		.antMatchers("/images/addImgae").hasAnyAuthority("ROLE_PROFESSEUR","ROLE_ETUDIANT")
+		.antMatchers("/images/addImgae","/images/delete/**").hasAnyAuthority("ROLE_PROFESSEUR","ROLE_ETUDIANT")
 		.antMatchers("/images/**").permitAll()
 		.anyRequest().authenticated()
 		.and()

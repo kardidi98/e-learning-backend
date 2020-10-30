@@ -36,7 +36,15 @@ public class Cours {
 	}
 
 
-
+	public Cours(String nom, Categorie categorie, LocalDate dateDeb, LocalDate dateFin, String description,
+			 Long professeurId) {
+		this.nom = nom;
+		this.categorie = categorie;
+		this.dateDeb = dateDeb;
+		this.dateFin = dateFin;
+		this.description = description;
+		this.professeurId = professeurId;
+	}
 
 
 	public Cours() {

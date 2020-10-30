@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,31 +49,80 @@ public class coursController {
 	public String addCours(@RequestHeader("Authorization") String token ,@RequestPart(value="image",required = false) MultipartFile image,
 			@RequestPart("cours") Cours cours,@RequestPart("professeur") String profUsername) throws RestClientException, IOException {
 		
-		HttpHeaders headers = new HttpHeaders();
-
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add(HttpHeaders.AUTHORIZATION, token);
-		HttpEntity< Image > imgEntity = new HttpEntity<>(new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()), headers);
-
-		Image img = restTemplate.postForObject("http://service-image/images/addImage",imgEntity,Image.class);
-		
 		Professeur prof = restTemplate.getForObject("http://service-utilisateur/users/professor/"+profUsername, Professeur.class);
 		
-		coursRepository.save(new Cours(cours.getNom(), cours.getCategorie(), cours.getDateDeb(),
-				cours.getDateFin(),cours.getDescription(), prof.getIduser(), img.getId()));
+		if(image!=null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(HttpHeaders.AUTHORIZATION, token);
+			HttpEntity< Image > imgEntity = new HttpEntity<>(new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()), headers);
+
+			Image img = restTemplate.postForObject("http://service-image/images/addImage",imgEntity,Image.class);
+			coursRepository.save(new Cours(cours.getNom(), cours.getCategorie(), cours.getDateDeb(),
+					cours.getDateFin(),cours.getDescription(), prof.getIduser(), img.getId()));
+		}
+		else {
+			coursRepository.save(new Cours(cours.getNom(), cours.getCategorie(), cours.getDateDeb(),
+					cours.getDateFin(),cours.getDescription(), prof.getIduser()));
+		}
+
+		
 		
 		return "Course added";
 	}
 	
-	@PutMapping(value="/update/{id}")
-	public String update(@PathVariable("id") Long id) {
-		Cours cours = coursRepository.findById(id).get();
+	@PutMapping(value="/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public String update(@PathVariable("id") Long id,@RequestHeader("Authorization") String token ,@RequestPart(value="image",required = false) MultipartFile image,
+			@RequestPart("cours") Cours cours,@RequestPart("professeur") String profUsername) throws IOException {
 		
+		Cours coursToUpdate = coursRepository.findById(id).get();
+		
+		coursToUpdate.setCategorie(cours.getCategorie());
+		coursToUpdate.setNom(cours.getNom());
+		coursToUpdate.setDateDeb(cours.getDateDeb());
+		coursToUpdate.setDateFin(cours.getDateFin());
+		coursToUpdate.setDescription(cours.getDescription());
+		
+		if(image!=null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(HttpHeaders.AUTHORIZATION, token);
+			HttpEntity< Image > imgEntity= null;
+			if(coursToUpdate.getImageId() != null) {
+				 imgEntity = new HttpEntity<>(new Image(coursToUpdate.getImageId(),image.getOriginalFilename(),image.getContentType(),image.getBytes()), headers);
+
+			}
+			else {
+				 imgEntity = new HttpEntity<>(new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()), headers);	
+			}
+
+			Image img = restTemplate.postForObject("http://service-image/images/addImage",imgEntity,Image.class);
+			
+			coursToUpdate.setImageId(img.getId());
+		}
+		else {
+			coursToUpdate.setImageId(coursToUpdate.getImageId());
+		}
+		coursRepository.save(coursToUpdate);		
 		return "MAJ réussie";
 	}
 	
 	@DeleteMapping(value="/delete/{id}")
-	public String delete(@PathVariable("id") Long id) {
+	public String delete(@PathVariable("id") Long id,@RequestHeader("Authorization") String token ) {
+		
+		Long imageId =coursRepository.findById(id).get().getImageId();
+		
+		if(imageId != null) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add(HttpHeaders.AUTHORIZATION, token);
+			HttpEntity<?> request = new HttpEntity<Object>(headers);
+			restTemplate.exchange("http://service-image/images/delete/"+imageId,HttpMethod.DELETE, request, String.class);
+		}
+		
+		
+		coursRepository.deleteById(id);
+		
 		return "suppression réussie";
 	}
 	
