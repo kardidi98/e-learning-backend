@@ -19,8 +19,8 @@ public class Inscription {
 	@OneToOne
 	private Cours cour;
 
-	public Inscription(LocalDate dateInscription, Long etudiantId, Cours courId) {
-		this.dateInscription = dateInscription;
+	public Inscription(Long etudiantId, Cours courId) {
+		this.dateInscription = LocalDate.now();
 		this.etudiantId = etudiantId;
 		this.cour = courId;
 	}

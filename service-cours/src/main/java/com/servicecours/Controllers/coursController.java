@@ -22,15 +22,20 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import com.servicecours.Entities.Cours;
+import com.servicecours.Entities.Etudiant;
 import com.servicecours.Entities.Image;
+import com.servicecours.Entities.Inscription;
 import com.servicecours.Entities.Professeur;
 import com.servicecours.Repositories.CoursRepository;
+import com.servicecours.Repositories.InscriptionReposiroty;
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RequestMapping("/courses")
 public class coursController {
 	@Autowired
 	private CoursRepository coursRepository;
+	@Autowired
+	private InscriptionReposiroty inscriptionRepository;
 	@Autowired
 	RestTemplate restTemplate;
 	
@@ -126,8 +131,15 @@ public class coursController {
 		return "suppression réussie";
 	}
 	
-	@PostMapping(value="/subscribe")
-	public String subscribe(){
+	@PostMapping(value="/subscribe/{username}/{id}")
+	public String subscribe(@PathVariable("id") Long id,@PathVariable("username") String username ){
+
+		Etudiant etudiant = restTemplate.getForObject("http://service-utilisateur/users/student/"+username, Etudiant.class);
+		Cours cours = coursRepository.findById(id).get();
+		Inscription inscription = new Inscription(etudiant.getIduser(), cours);
+		
+		inscriptionRepository.save(inscription);
+		
 		return "Inscription réussie";
 	}
 

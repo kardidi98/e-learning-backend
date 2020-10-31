@@ -46,9 +46,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public void configure(HttpSecurity http) throws Exception {
 		http
 		.authorizeRequests()
-		
-		.antMatchers("/users/api/home")
-		.hasAuthority("ROLE_PROFESSEUR")
 		.antMatchers("/users/**").permitAll()
 		.anyRequest().authenticated();
 		http

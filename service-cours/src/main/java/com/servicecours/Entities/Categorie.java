@@ -8,7 +8,8 @@ public enum Categorie {
 	Marketing,
 	DevOps,
 	Programmation,
-	Langues
+	Langues,
+	Finance
 	
 
 }

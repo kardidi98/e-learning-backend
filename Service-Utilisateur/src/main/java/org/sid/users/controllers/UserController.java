@@ -59,15 +59,17 @@ public class UserController {
 	@Autowired
 	RestTemplate restTemplate;
 	
-	@GetMapping("/api/home")
-	public String getHome() {
-		return "welcome home";
-	}
-	
+
 	@GetMapping("/professor/{username}")
 	public Professeur getProf(@PathVariable("username") String username) {
 		
 		return professeurRepository.findByEmail(username);
+	}
+	
+	@GetMapping("/student/{username}")
+	public Etudiant getStudent(@PathVariable("username") String username) {
+		
+		return etudiantRepository.findByEmail(username);
 	}
 	
 	@GetMapping("/professors")
@@ -101,9 +103,15 @@ public class UserController {
 			if (user.getRole().equals("ROLE_ETUDIANT"))
 				etudiantRepository.save(new Etudiant(user));
 			if (user.getRole().equals("ROLE_PROFESSEUR")) {
-				Image img = restTemplate.postForObject("http://service-image/images/addImage",
+				if(image!=null) {
+					Image img = restTemplate.postForObject("http://service-image/images/addImage",
 						new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()),Image.class);
-				professeurRepository.save(new Professeur(user,img.getId()));
+					professeurRepository.save(new Professeur(user,img.getId()));
+				}
+				else {
+					professeurRepository.save(new Professeur(user));
+				}
+				
 			}
 			
 			return "User is added successfully.";
