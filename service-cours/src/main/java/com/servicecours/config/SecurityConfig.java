@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.hasAuthority("ROLE_PROFESSEUR")
 		.antMatchers("/courses/delete/**")
 		.hasAuthority("ROLE_PROFESSEUR")
-		.antMatchers("/courses/subscribe/**")
+		.antMatchers("/courses/subscribe/**","/courses/unsubscribe/**")
 		.hasAuthority("ROLE_ETUDIANT")
 		.antMatchers("/courses/**").permitAll()
 		.anyRequest().authenticated()

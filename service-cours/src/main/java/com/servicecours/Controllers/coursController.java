@@ -49,6 +49,11 @@ public class coursController {
 		return coursRepository.findAll();
 	}
 	
+	@GetMapping("/inscription/All")
+	public List<Inscription> getSubscriptionsByCourse() {
+		return inscriptionRepository.findAll();
+	}
+	
 	
 	@PostMapping(value="/add",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public String addCours(@RequestHeader("Authorization") String token ,@RequestPart(value="image",required = false) MultipartFile image,
@@ -141,6 +146,17 @@ public class coursController {
 		inscriptionRepository.save(inscription);
 		
 		return "Inscription réussie";
+	}
+	
+	@DeleteMapping(value="/unsubscribe/{username}/{id}")
+	public String unsubscribe(@PathVariable("id") Long id,@PathVariable("username") String username ){
+
+		Etudiant etudiant = restTemplate.getForObject("http://service-utilisateur/users/student/"+username, Etudiant.class);
+		Cours cours = coursRepository.findById(id).get();
+		
+		inscriptionRepository.delete(inscriptionRepository.findByEtudiantIdAndCourId(cours.getId(), etudiant.getIduser()));
+		
+		return "Desinscription réussie";
 	}
 
 }
