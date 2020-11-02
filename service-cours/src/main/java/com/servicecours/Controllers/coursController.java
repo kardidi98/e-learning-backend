@@ -82,7 +82,8 @@ public class coursController {
 	}
 	
 	@PutMapping(value="/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String update(@PathVariable("id") Long id,@RequestHeader("Authorization") String token ,@RequestPart(value="image",required = false) MultipartFile image,
+	public String update(@PathVariable("id") Long id,@RequestHeader("Authorization") String token ,
+			@RequestPart(value="image",required = false) MultipartFile image,
 			@RequestPart("cours") Cours cours,@RequestPart("professeur") String profUsername) throws IOException {
 		
 		Cours coursToUpdate = coursRepository.findById(id).get();
@@ -99,7 +100,8 @@ public class coursController {
 			headers.add(HttpHeaders.AUTHORIZATION, token);
 			HttpEntity< Image > imgEntity= null;
 			if(coursToUpdate.getImageId() != null) {
-				 imgEntity = new HttpEntity<>(new Image(coursToUpdate.getImageId(),image.getOriginalFilename(),image.getContentType(),image.getBytes()), headers);
+				 imgEntity = new HttpEntity<>(new Image(coursToUpdate.getImageId(),image.getOriginalFilename(),
+						 image.getContentType(),image.getBytes()), headers);
 
 			}
 			else {

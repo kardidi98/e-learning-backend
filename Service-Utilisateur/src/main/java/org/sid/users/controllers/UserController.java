@@ -98,7 +98,8 @@ public class UserController {
 	
 
 	@PostMapping(value="/signup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String signup(@RequestPart(value = "image",required = false) MultipartFile image, @RequestPart("utilisateur") Utilisateur user) throws IOException {
+	public String signup(@RequestPart(value = "image",required = false) MultipartFile image, 
+			@RequestPart("utilisateur") Utilisateur user) throws IOException {
 
 		if(userRepository.findByEmail(user.getEmail()).size()>0) {
 			return "Already exists.";
