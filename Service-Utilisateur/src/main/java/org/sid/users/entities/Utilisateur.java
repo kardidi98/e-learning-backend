@@ -106,6 +106,16 @@ public class Utilisateur {
 				+ ", nom=" + nom + ", prenom=" + prenom + ", adresse=" + adresse + ", tel=" + tel + ", DateInscrip="
 				+ DateInscrip + "]";
 	}
+	public void setDetails(String adresse2, LocalDate dateInscrip2, String email2, String nom2, String prenom2,
+			String tel2) {
+		this.email = email2;
+		this.nom = nom2;
+		this.prenom = prenom2;
+		this.adresse = adresse2;
+		this.tel = tel2;
+		this.DateInscrip = dateInscrip2;
+		
+	}
 	
 	
 	

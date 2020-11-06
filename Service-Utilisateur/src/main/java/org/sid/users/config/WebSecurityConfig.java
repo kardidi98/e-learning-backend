@@ -46,6 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	public void configure(HttpSecurity http) throws Exception {
 		http
 		.authorizeRequests()
+		.antMatchers("/users/update/**").hasAnyAuthority("ROLE_ETUDIANT","ROLE_PROFESSEUR")
 		.antMatchers("/users/**").permitAll()
 		.anyRequest().authenticated();
 		http

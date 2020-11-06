@@ -3,6 +3,7 @@ package org.sid.users.controllers;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.codec.binary.Base64;
 import org.sid.users.config.JwtTokenUtil;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -108,8 +110,17 @@ public class UserController {
 			
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			userRepository.save(user);
-			if (user.getRole().equals("ROLE_ETUDIANT"))
-				etudiantRepository.save(new Etudiant(user));
+			if (user.getRole().equals("ROLE_ETUDIANT")) {
+				if(image!=null) {
+					Image img = restTemplate.postForObject("http://service-image/images/addImage",
+						new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()),Image.class);
+					etudiantRepository.save(new Etudiant(user,img.getId()));
+				}
+				else {
+					etudiantRepository.save(new Etudiant(user));
+				}
+			}
+				
 			if (user.getRole().equals("ROLE_PROFESSEUR")) {
 				if(image!=null) {
 					Image img = restTemplate.postForObject("http://service-image/images/addImage",
@@ -153,15 +164,89 @@ public class UserController {
 		
 	}
 	
-//	@PutMapping("/update/{id}")
-//	public String modify(@RequestBody Utilisateur user, @PathVariable("id") Long id) {
-//		user.setPassword(passwordEncoder.encode(user.getPassword()));
-//		user.setIduser(id);
-//		userRepository.save(user);
-//		if (user.getRole().equals("ROLE_ETUDIANT"))
-//			etudiantRepository.save(new Etudiant(user));
-//		if (user.getRole().equals("ROLE_PROFESSEUR"))
-//			professeurRepository.save(new Professeur(user));
-//		return "User is added successfully.";
-//	}
+	@PutMapping("/update/{id}")
+	public String modify(@RequestPart(value = "image",required = false) MultipartFile image, @PathVariable("id") Long id
+			,@RequestPart("utilisateur") Utilisateur user) throws RestClientException, IOException {
+			Utilisateur utilisateur = userRepository.findByEmail(user.getEmail()).get(0);
+		
+			utilisateur.setDetails(user.getAdresse(),user.getDateInscrip(),user.getEmail(),user.getNom(),
+					user.getPrenom(),user.getTel());
+			
+			userRepository.save(utilisateur);
+			if (user.getRole().equals("ROLE_ETUDIANT")) {
+				
+				
+				updateStudent(id, utilisateur,image);
+				
+			}
+				
+			if (user.getRole().equals("ROLE_PROFESSEUR")) {
+				
+				updateProfesseur(id,utilisateur,image);
+				
+				
+			}
+		return "MAJ réussie.";
+	
+  }
+
+	private void updateProfesseur(Long id, Utilisateur utilisateur, MultipartFile image) throws IOException {
+		Professeur professeur = null;
+		Professeur oldProf = professeurRepository.findById(id).get();
+		if(image!=null) {
+			Image imgEntity = null;
+			if(oldProf.getIdimage() != null) {
+				 imgEntity = new Image(oldProf.getIdimage(), image.getOriginalFilename(),
+						 image.getContentType(),image.getBytes());
+			}
+			else {
+				imgEntity = new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes());
+			}
+			
+			Image img = restTemplate.postForObject("http://service-image/images/addImage",
+								imgEntity,Image.class);
+			
+			professeur = new Professeur(utilisateur,img.getId());
+			professeur.setIduser(id);
+			
+		}
+		else {
+			professeur = new Professeur(utilisateur,oldProf.getIdimage());
+			professeur.setIduser(id);
+			
+		}
+		professeurRepository.save(professeur);
+		
+	}
+
+	private void updateStudent(Long id, Utilisateur utilisateur, MultipartFile image) throws IOException {
+		
+		Etudiant etudiant = null;
+		Etudiant oldStudent = etudiantRepository.findById(id).get();
+		if(image!=null) {
+			Image imgEntity = null;
+			if(oldStudent.getIdimage() != null) {
+				 imgEntity = new Image(oldStudent.getIdimage(), image.getOriginalFilename(),
+						 image.getContentType(),image.getBytes());
+			}
+			else {
+				imgEntity = new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes());
+			}
+			
+			Image img = restTemplate.postForObject("http://service-image/images/addImage",
+								imgEntity,Image.class);
+			
+			etudiant = new Etudiant(utilisateur,img.getId());
+			etudiant.setIduser(id);
+			
+		}
+		else {
+			etudiant = new Etudiant(utilisateur,oldStudent.getIdimage());
+			etudiant.setIduser(id);
+			
+		}
+		etudiantRepository.save(etudiant);
+	}
+	
+
 }

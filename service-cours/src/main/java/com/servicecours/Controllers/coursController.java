@@ -82,7 +82,7 @@ public class coursController {
 	}
 	
 	@PutMapping(value="/update/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public String update(@PathVariable("id") Long id,@RequestHeader("Authorization") String token ,
+	public String update(@PathVariable("id") Long id,
 			@RequestPart(value="image",required = false) MultipartFile image,
 			@RequestPart("cours") Cours cours,@RequestPart("professeur") String profUsername) throws IOException {
 		
@@ -95,17 +95,14 @@ public class coursController {
 		coursToUpdate.setDescription(cours.getDescription());
 		
 		if(image!=null) {
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			headers.add(HttpHeaders.AUTHORIZATION, token);
-			HttpEntity< Image > imgEntity= null;
+			Image imgEntity= null;
 			if(coursToUpdate.getImageId() != null) {
-				 imgEntity = new HttpEntity<>(new Image(coursToUpdate.getImageId(),image.getOriginalFilename(),
-						 image.getContentType(),image.getBytes()), headers);
+				 imgEntity = new Image(coursToUpdate.getImageId(),image.getOriginalFilename(),
+						 image.getContentType(),image.getBytes());
 
 			}
 			else {
-				 imgEntity = new HttpEntity<>(new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes()), headers);	
+				 imgEntity = new Image(image.getOriginalFilename(),image.getContentType(),image.getBytes());	
 			}
 
 			Image img = restTemplate.postForObject("http://service-image/images/addImage",imgEntity,Image.class);
