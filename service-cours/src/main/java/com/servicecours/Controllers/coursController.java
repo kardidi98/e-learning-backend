@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.google.common.base.Enums;
+import com.servicecours.Entities.Categorie;
 import com.servicecours.Entities.Cours;
 import com.servicecours.Entities.Etudiant;
 import com.servicecours.Entities.Image;
@@ -28,6 +32,7 @@ import com.servicecours.Entities.Inscription;
 import com.servicecours.Entities.Professeur;
 import com.servicecours.Repositories.CoursRepository;
 import com.servicecours.Repositories.InscriptionReposiroty;
+
 @RestController
 @CrossOrigin(origins = "*",allowedHeaders = "*")
 @RequestMapping("/courses")
@@ -39,9 +44,18 @@ public class coursController {
 	@Autowired
 	RestTemplate restTemplate;
 	
-	@GetMapping("/{id}")
-	public Cours getCourse(@PathVariable("id") Long id) {
-		return coursRepository.findById(id).get();
+//	@GetMapping("/{id}")
+//	public Cours getCourse(@PathVariable("id") Long id) {
+//		return coursRepository.findById(id).get();
+//	}
+	@GetMapping("/{keyword}")
+	public List<Cours> getCourseByKeyword(@PathVariable("keyword") String keyword) {
+		if(Enums.getIfPresent(Categorie.class, StringUtils.capitalize(keyword)).isPresent()) {
+			
+			Categorie categorie = Categorie.valueOf(StringUtils.capitalize(keyword));
+			return coursRepository.findByCategorie(categorie);
+		 } 
+		return coursRepository.findByNomContaining(keyword);
 	}
 	
 	@GetMapping("/All")

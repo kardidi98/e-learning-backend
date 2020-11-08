@@ -6,7 +6,7 @@ public enum Categorie {
 	BI,
 	AI,
 	Marketing,
-	DevOps,
+	Devops,
 	Programmation,
 	Langues,
 	Finance
