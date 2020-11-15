@@ -11,7 +11,7 @@
 	<groupId>com.config-service.kd</groupId>
 	<artifactId>config-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>config-service</name>
 	<description>webservices project</description>
 
@@ -67,6 +67,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>config-service-elearning</finalName>
 	</build>
 
 </project>

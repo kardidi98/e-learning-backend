@@ -1,0 +1,27 @@
+version: "3"
+services:
+      
+  config:
+    image: config-service-elearning
+    ports:
+      - "8085:8085"
+    networks:
+      - config-user
+  
+  utilisateur:
+    image: service-utilisateur-elearning
+    ports:
+      - "8081:8081"
+    networks:
+      - config-user
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config:8085/
+      SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID: config-service-elearning
+    depends_on:
+      - config
+      
+
+networks:
+  config-user:
+  
+  

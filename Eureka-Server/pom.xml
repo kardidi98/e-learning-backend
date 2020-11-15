@@ -11,7 +11,7 @@
 	<groupId>com.eureka-server.kd</groupId>
 	<artifactId>Eureka-Server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>Eureka-Server</name>
 	<description>webservices project</description>
 
@@ -46,6 +46,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+	
 	</dependencies>
 
 	<dependencyManagement>
@@ -67,6 +68,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>eureka-server</finalName>
 	</build>
 
 </project>

@@ -1,0 +1,44 @@
+version: "3"
+services:
+  eureka:
+    image: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - config-eureka
+      - eureka-user
+
+ 
+  config:
+    image: config-service-elearning
+    ports:
+      - "8085:8085"
+    networks:
+      - config-eureka 
+      - config-user
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+    depends_on:
+      - eureka
+  
+  utilisateur:
+    image: service-utilisateur-elearning
+    ports:
+      - "8081:8081"
+    networks:
+      - config-user
+      - eureka-user
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+      SPRING_CLOUD_CONFIG_URI: http://config:8085
+      SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID: config-service-elearning
+      
+    depends_on:
+      - eureka
+      - config
+
+networks:
+  config-eureka:
+  config-user:
+  eureka-user:
+  
